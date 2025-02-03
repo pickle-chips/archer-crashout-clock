@@ -15,13 +15,10 @@
             justify-content: center;
             align-items: center;
             transition: background 1s ease;
+            background: linear-gradient(to bottom, #8B0000, #000000); /* Dark red to black gradient */
         }
-        h1 {
-            color: #fff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-        }
-        #clock {
-            font-size: 3em;
+        #crashout-text {
+            font-size: 2.5em;
             color: #fff;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
@@ -36,19 +33,15 @@
             margin: 5px;
             padding: 5px;
             font-size: 1em;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 1em;
-            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #fff;
+            color: #fff;
         }
     </style>
 </head>
 <body>
     <div id="container">
-        <h1>Archer Crashout Clock</h1>
-        <div id="clock">00:00:00</div>
+        <div id="crashout-text">IT IS <span id="x-value">0</span> SECONDS UNTIL AN ARCHER CRASHOUT</div>
         <div id="inputs">
             <label for="A">Relationship Status (0-10):</label>
             <input type="number" id="A" min="0" max="10" value="5">
@@ -61,13 +54,11 @@
             <br>
             <label for="D">Rage (0-10):</label>
             <input type="number" id="D" min="0" max="10" value="5">
-            <br>
-            <button onclick="updateVariables()">Update</button>
         </div>
     </div>
 
     <script>
-        // Variables for the crashout factors (you can update these dynamically)
+        // Variables for the crashout factors
         let A = 5; // Relationship status (0-10)
         let B = 5; // Grades (0-10)
         let C = 5; // Laziness (0-10)
@@ -87,37 +78,39 @@
             return x;
         }
 
-        // Function to update the clock and background
-        function updateClock() {
-            const now = new Date();
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+        // Function to update the crashout text and background
+        function updateCrashout() {
+            // Calculate X
+            const x = calculateCrashoutSeconds(A, B, C, D);
 
-            // Calculate seconds to crashout
-            const crashoutSeconds = calculateCrashoutSeconds(A, B, C, D);
+            // Update the text
+            document.getElementById('x-value').textContent = Math.round(x);
 
-            // Map crashoutSeconds to a gradient intensity (0% to 100%)
+            // Map X to a gradient intensity (0% to 100%)
             const maxCrashout = 100; // Adjust this based on your function's max output
-            const gradientIntensity = (crashoutSeconds / maxCrashout) * 100;
+            const gradientIntensity = (x / maxCrashout) * 100;
 
-            // Update the background gradient
-            document.body.style.background = `linear-gradient(to bottom, #ff7f7f ${gradientIntensity}%, #ffffff 100%)`;
+            // Update the background gradient (fiery red)
+            document.body.style.background = `linear-gradient(to bottom, #8B0000 ${gradientIntensity}%, #000000 100%)`;
         }
 
         // Function to update variables from input fields
         function updateVariables() {
-            A = parseInt(document.getElementById('A').value);
-            B = parseInt(document.getElementById('B').value);
-            C = parseInt(document.getElementById('C').value);
-            D = parseInt(document.getElementById('D').value);
-            updateClock(); // Update the clock immediately
+            A = parseFloat(document.getElementById('A').value);
+            B = parseFloat(document.getElementById('B').value);
+            C = parseFloat(document.getElementById('C').value);
+            D = parseFloat(document.getElementById('D').value);
+            updateCrashout(); // Update the crashout display
         }
 
-        // Update the clock every second
-        setInterval(updateClock, 1000);
-        updateClock(); // Initial call to display the clock immediately
+        // Add event listeners to inputs for automatic updates
+        document.getElementById('A').addEventListener('input', updateVariables);
+        document.getElementById('B').addEventListener('input', updateVariables);
+        document.getElementById('C').addEventListener('input', updateVariables);
+        document.getElementById('D').addEventListener('input', updateVariables);
+
+        // Initial call to display the crashout value
+        updateCrashout();
     </script>
 </body>
 </html>
