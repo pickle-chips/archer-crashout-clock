@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Archer Crashout Clock</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 1s ease;
+        }
+        h1 {
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        #clock {
+            font-size: 3em;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        #inputs {
+            margin-top: 20px;
+        }
+        label {
+            color: #fff;
+            font-size: 1.2em;
+        }
+        input {
+            margin: 5px;
+            padding: 5px;
+            font-size: 1em;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>Archer Crashout Clock</h1>
+        <div id="clock">00:00:00</div>
+        <div id="inputs">
+            <label for="A">Relationship Status (0-10):</label>
+            <input type="number" id="A" min="0" max="10" value="5">
+            <br>
+            <label for="B">Grades (0-10):</label>
+            <input type="number" id="B" min="0" max="10" value="5">
+            <br>
+            <label for="C">Laziness (0-10):</label>
+            <input type="number" id="C" min="0" max="10" value="5">
+            <br>
+            <label for="D">Rage (0-10):</label>
+            <input type="number" id="D" min="0" max="10" value="5">
+            <br>
+            <button onclick="updateVariables()">Update</button>
+        </div>
+    </div>
 
+    <script>
+        // Variables for the crashout factors (you can update these dynamically)
+        let A = 5; // Relationship status (0-10)
+        let B = 5; // Grades (0-10)
+        let C = 5; // Laziness (0-10)
+        let D = 5; // Rage (0-10)
+
+        // Function to calculate seconds to crashout
+        function calculateCrashoutSeconds(a, b, c, d) {
+            const term1 = Math.abs((a - b) / 2);
+            const term2 = Math.abs(c - a);
+            const term3 = Math.abs(11 - d);
+            const insideSqrt = Math.pow(term1, 3) * Math.pow(term2, 2) * term3;
+            const sqrtValue = Math.sqrt(insideSqrt);
+            const numerator = 0.0725 * sqrtValue;
+            const denominator = 0.1778795;
+            const fraction = numerator / denominator;
+            const x = Math.pow(fraction, 2);
+            return x;
+        }
+
+        // Function to update the clock and background
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}:${seconds}`;
+
+            // Calculate seconds to crashout
+            const crashoutSeconds = calculateCrashoutSeconds(A, B, C, D);
+
+            // Map crashoutSeconds to a gradient intensity (0% to 100%)
+            const maxCrashout = 100; // Adjust this based on your function's max output
+            const gradientIntensity = (crashoutSeconds / maxCrashout) * 100;
+
+            // Update the background gradient
+            document.body.style.background = `linear-gradient(to bottom, #ff7f7f ${gradientIntensity}%, #ffffff 100%)`;
+        }
+
+        // Function to update variables from input fields
+        function updateVariables() {
+            A = parseInt(document.getElementById('A').value);
+            B = parseInt(document.getElementById('B').value);
+            C = parseInt(document.getElementById('C').value);
+            D = parseInt(document.getElementById('D').value);
+            updateClock(); // Update the clock immediately
+        }
+
+        // Update the clock every second
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call to display the clock immediately
+    </script>
+</body>
+</html>
