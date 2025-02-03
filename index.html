@@ -14,13 +14,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 10s linear; /* Smooth transition for gradient movement */
-            background: radial-gradient(circle at 50% 50%, #8B0000, #000000); /* Initial gradient */
+            background: #000; /* Initial background */
+            overflow: hidden;
         }
         #crashout-text {
             font-size: 2.5em;
             color: #fff;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            z-index: 2; /* Ensure text is above the gradient */
         }
         #x-value {
             font-weight: bold;
@@ -30,6 +31,7 @@
         }
         #inputs {
             margin-top: 20px;
+            z-index: 2; /* Ensure inputs are above the gradient */
         }
         label {
             color: #fff;
@@ -84,6 +86,22 @@
             return x;
         }
 
+        // Function to generate a dynamic gradient with multiple hot spots
+        function generateDynamicGradient(blackIntensity) {
+            const gradients = [];
+            const numHotSpots = 5; // Number of red hot spots
+
+            for (let i = 0; i < numHotSpots; i++) {
+                const posX = Math.random() * 100; // Random X position
+                const posY = Math.random() * 100; // Random Y position
+                const size = 20 + Math.random() * 30; // Random size of the hot spot
+                gradients.push(`radial-gradient(circle at ${posX}% ${posY}%, #8B0000, #000000 ${size}%)`);
+            }
+
+            // Combine gradients and add black intensity
+            return `${gradients.join(", ")}, radial-gradient(circle, #000000 ${blackIntensity}%, transparent ${blackIntensity + 10}%)`;
+        }
+
         // Function to update the crashout text and background
         function updateCrashout() {
             // Calculate X
@@ -96,14 +114,11 @@
             const maxCrashout = 100; // Adjust this based on your function's max output
             const blackIntensity = (x / maxCrashout) * 100;
 
-            // Generate random positions for the gradient
-            const posX = Math.random() * 100;
-            const posY = Math.random() * 100;
+            // Generate a dynamic gradient
+            const gradient = generateDynamicGradient(blackIntensity);
 
             // Update the background gradient
-            document.body.style.background = `
-                radial-gradient(circle at ${posX}% ${posY}%, #8B0000, #000000 ${blackIntensity}%)
-            `;
+            document.body.style.background = gradient;
         }
 
         // Function to update variables from input fields
@@ -124,8 +139,8 @@
         // Initial call to display the crashout value
         updateCrashout();
 
-        // Update the gradient every 2 seconds for a lava-like effect
-        setInterval(updateCrashout, 2000);
+        // Update the gradient at 24fps (approximately 41.67ms per frame)
+        setInterval(updateCrashout, 1000 / 24);
     </script>
 </body>
 </html>
