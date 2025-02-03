@@ -72,6 +72,10 @@
         let C = 5; // Laziness (0-10)
         let D = 5; // Rage (0-10)
 
+        // Variables for gradient animation
+        let gradientAngle = 0; // Angle for smooth gradient movement
+        let explosionActive = false; // Track if explosion is active
+
         // Function to calculate seconds to crashout
         function calculateCrashoutSeconds(a, b, c, d) {
             const term1 = Math.abs((a - b) / 2);
@@ -86,20 +90,29 @@
             return x;
         }
 
-        // Function to generate a dynamic gradient with multiple hot spots
-        function generateDynamicGradient(blackIntensity) {
-            const gradients = [];
-            const numHotSpots = 5; // Number of red hot spots
+        // Function to generate a smooth gradient with multiple red areas
+        function generateSmoothGradient(blackIntensity) {
+            gradientAngle = (gradientAngle + 0.5) % 360; // Increment angle for smooth movement
+            return `
+                linear-gradient(${gradientAngle}deg, #8B0000, #8B0000 20%, #000000 ${blackIntensity}%),
+                linear-gradient(${gradientAngle + 90}deg, #8B0000, #8B0000 20%, #000000 ${blackIntensity}%),
+                linear-gradient(${gradientAngle + 180}deg, #8B0000, #8B0000 20%, #000000 ${blackIntensity}%),
+                linear-gradient(${gradientAngle + 270}deg, #8B0000, #8B0000 20%, #000000 ${blackIntensity}%)
+            `;
+        }
 
-            for (let i = 0; i < numHotSpots; i++) {
-                const posX = Math.random() * 100; // Random X position
-                const posY = Math.random() * 100; // Random Y position
-                const size = 20 + Math.random() * 30; // Random size of the hot spot
-                gradients.push(`radial-gradient(circle at ${posX}% ${posY}%, #8B0000, #000000 ${size}%)`);
+        // Function to generate a chaotic explosion gradient
+        function generateExplosionGradient() {
+            const colors = ["#FF4500", "#FFD700", "#8B0000", "#000000"];
+            let gradients = [];
+            for (let i = 0; i < 10; i++) {
+                const posX = Math.random() * 100;
+                const posY = Math.random() * 100;
+                const size = 10 + Math.random() * 40;
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                gradients.push(`radial-gradient(circle at ${posX}% ${posY}%, ${color}, transparent ${size}%)`);
             }
-
-            // Combine gradients and add black intensity
-            return `${gradients.join(", ")}, radial-gradient(circle, #000000 ${blackIntensity}%, transparent ${blackIntensity + 10}%)`;
+            return gradients.join(", ");
         }
 
         // Function to update the crashout text and background
@@ -114,11 +127,18 @@
             const maxCrashout = 100; // Adjust this based on your function's max output
             const blackIntensity = (x / maxCrashout) * 100;
 
-            // Generate a dynamic gradient
-            const gradient = generateDynamicGradient(blackIntensity);
-
-            // Update the background gradient
-            document.body.style.background = gradient;
+            // Check if X is 0 (explosion condition)
+            if (x <= 0 && !explosionActive) {
+                explosionActive = true;
+                document.body.style.background = generateExplosionGradient();
+                setTimeout(() => {
+                    explosionActive = false;
+                }, 1000); // Reset explosion after 1 second
+            } else if (!explosionActive) {
+                // Generate a smooth gradient
+                const gradient = generateSmoothGradient(blackIntensity);
+                document.body.style.background = gradient;
+            }
         }
 
         // Function to update variables from input fields
