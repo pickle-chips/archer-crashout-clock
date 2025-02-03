@@ -102,18 +102,19 @@
         // Variables for gradient animation
         let gradientAngle = 0; // Angle for smooth gradient movement
 
-        // Function to calculate seconds to crashout
+        // New function to calculate seconds to crashout
         function calculateCrashoutSeconds(a, b, c, d) {
-            const term1 = Math.abs((a - b) / 2);
-            const term2 = Math.abs(c - a);
-            const term3 = Math.abs(11 - d);
-            const insideSqrt = Math.pow(term1, 3) * Math.pow(term2, 2) * term3;
-            const sqrtValue = Math.sqrt(insideSqrt);
-            const numerator = 0.0725 * sqrtValue;
-            const denominator = 0.1778795;
-            const fraction = numerator / denominator;
-            const x = Math.pow(fraction, 2);
-            return x;
+            const wA = 2; // Weight for Relationship status
+            const wB = 1.5; // Weight for Grades
+            const wC = 3; // Weight for Laziness
+            const wD = 2.5; // Weight for Rage
+            const k = 10; // Scaling factor
+
+            // Calculate X using the new formula
+            const x = (wA * a + wB * b - wC * c - wD * d) * k;
+
+            // Ensure X is not negative
+            return Math.max(x, 0);
         }
 
         // Function to generate a smooth gradient with multiple red areas
