@@ -14,8 +14,8 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: background 2s ease;
-            background: linear-gradient(45deg, #8B0000, #000000); /* Initial gradient */
+            transition: background 10s linear; /* Smooth transition for gradient movement */
+            background: radial-gradient(circle at 50% 50%, #8B0000, #000000); /* Initial gradient */
         }
         #crashout-text {
             font-size: 2.5em;
@@ -84,14 +84,6 @@
             return x;
         }
 
-        // Function to generate a random gradient angle and colors
-        function generateRandomGradient() {
-            const angle = Math.floor(Math.random() * 360); // Random angle (0-360 degrees)
-            const color1 = `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Random color
-            const color2 = `#${Math.floor(Math.random() * 16777215).toString(16)}`; // Random color
-            return `linear-gradient(${angle}deg, ${color1}, ${color2})`;
-        }
-
         // Function to update the crashout text and background
         function updateCrashout() {
             // Calculate X
@@ -100,11 +92,18 @@
             // Update the text
             document.getElementById('x-value').textContent = Math.round(x);
 
-            // Generate a new random gradient
-            const gradient = generateRandomGradient();
+            // Map X to a gradient intensity (0% to 100%)
+            const maxCrashout = 100; // Adjust this based on your function's max output
+            const blackIntensity = (x / maxCrashout) * 100;
 
-            // Update the background gradient with a smooth transition
-            document.body.style.background = gradient;
+            // Generate random positions for the gradient
+            const posX = Math.random() * 100;
+            const posY = Math.random() * 100;
+
+            // Update the background gradient
+            document.body.style.background = `
+                radial-gradient(circle at ${posX}% ${posY}%, #8B0000, #000000 ${blackIntensity}%)
+            `;
         }
 
         // Function to update variables from input fields
@@ -125,8 +124,8 @@
         // Initial call to display the crashout value
         updateCrashout();
 
-        // Update the gradient every 5 seconds for a dynamic effect
-        setInterval(updateCrashout, 5000);
+        // Update the gradient every 2 seconds for a lava-like effect
+        setInterval(updateCrashout, 2000);
     </script>
 </body>
 </html>
