@@ -48,21 +48,21 @@
         }
         .exclamation {
             position: absolute;
-            font-size: 5em;
+            font-size: 8em; /* Larger exclamation marks */
             color: #ff4500;
             text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500;
             top: 50%;
             transform: translateY(-50%);
         }
         .exclamation.left {
-            left: 10%;
+            left: 5%;
         }
         .exclamation.right {
-            right: 10%;
+            right: 5%;
         }
         .caution {
             position: absolute;
-            font-size: 3em;
+            font-size: 5em; /* Larger CAUTION text */
             color: #ff4500;
             text-shadow: 0 0 10px #ff4500, 0 0 20px #ff4500;
             top: 10%;
@@ -120,7 +120,7 @@
         function generateSmoothGradient(blackIntensity) {
             gradientAngle = (gradientAngle + 0.5) % 360; // Increment angle for smooth movement
             return `
-                linear-gradient(${gradientAngle}deg, #8B0000, #8B0000 ${100 - blackIntensity}%, #000000 ${100 - blackIntensity}%)
+                linear-gradient(${gradientAngle}deg, #8B0000, #8B0000 ${100 - blackIntensity}%, #000000 ${100 - blackIntensity + 10}%)
             `;
         }
 
